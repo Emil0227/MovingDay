@@ -60,10 +60,9 @@
     <Analyzer Include="E:\U3D\Unity\2022.3.19f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scenes\Scripts\PlacementSystem.cs" />
-    <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
-    <Compile Include="Assets\Scenes\Scripts\ObjectsDataBaseSO.cs" />
-    <Compile Include="Assets\Scenes\Scripts\InputManager.cs" />
+    <Compile Include="Assets\Scripts\ObjectsDataBaseSO.cs" />
+    <Compile Include="Assets\Scripts\InputManager.cs" />
+    <Compile Include="Assets\Scripts\PlacementSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
