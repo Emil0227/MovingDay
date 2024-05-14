@@ -1,5 +1,7 @@
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,22 +9,26 @@ using UnityEngine.UI;
 public class PlacementSystem : MonoBehaviour
 {
     [SerializeField]
-    private GameObject m_MouseIndicator;
-    [SerializeField]
     private InputManager m_InputManager;
     [SerializeField]
     private Grid m_Grid;
-
     [SerializeField]
     private ObjectsDataBaseSO m_DataBase;
-    private int m_SelectedObjectIndex = -1;
+    [SerializeField]
+    private int m_ObjectCount;
 
+    private int m_SelectedObjectIndex = -1;
     private bool m_IsItemSelected = false;
     private GameObject m_SelectedObject;
+    private GridData m_FloorData, m_FurnitureData;
+    private Vector3Int m_CurrentGridPosition;
+
 
     private void Start()
     {
         StopPlacement();
+        //m_FloorData = new();
+        //m_FurnitureData = new();
     }
 
     private void Update()
@@ -30,15 +36,43 @@ public class PlacementSystem : MonoBehaviour
         if (m_SelectedObjectIndex < 0)
             return;
 
-        //Êó±êÎ»ÖÃ
-        Vector3 mousePosition = m_InputManager.GetSelectedMapPosition();
-        m_MouseIndicator.transform.position = mousePosition;
+        //bool placementValidity = CheckPlacementValidity(m_CurrentGridPosition, m_SelectedObjectIndex);
+        //if (!placementValidity)
+        //    return;
+
+        ItemFollowMouse();
+    }
+
+    private void ItemFollowMouse()
+    {
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = Camera.main.nearClipPlane;
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        RaycastHit hit;
         
-        //ÎïÆ·¸úËæÊó±êÒÆ¶¯
         if (m_IsItemSelected)
         {
-            Vector3Int gridPosition = m_Grid.WorldToCell(mousePosition);// ¶¨Î»Êó±êËùÔÚ¸ñ×ÓµÄ×ø±ê
-            m_SelectedObject.transform.position = m_Grid.CellToWorld(gridPosition);
+            //æ£€æµ‹å°„çº¿æ˜¯å¦å‡»ä¸­ç‰©å“å¯¹åº”çš„layer
+            if (Physics.Raycast(ray, out hit, 1000, m_DataBase.ObjectDataList[m_SelectedObjectIndex].PlacementLayerMask))//100æ˜¯å°„çº¿é•¿åº¦
+            {
+                //ç‰©å“æŒ‰ç…§æ ¼å­è·³åŠ¨
+                m_CurrentGridPosition = m_Grid.WorldToCell(hit.point);
+                m_SelectedObject.transform.position = m_Grid.CellToWorld(m_CurrentGridPosition);
+                //è®¾ç½®ç‰©å“ä¸ºä¸é€æ˜
+                m_SelectedObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+            }
+            else
+            {
+                //ç‰©å“è·Ÿéšé¼ æ ‡ç§»åŠ¨
+                Vector3 screenPos = Camera.main.WorldToScreenPoint(m_SelectedObject.transform.position);//è·å–éœ€è¦ç§»åŠ¨ç‰©å“çš„ä¸–ç•Œè½¬å±å¹•åæ ‡
+                mousePos = Input.mousePosition;//è·å–é¼ æ ‡ä½ç½®
+                mousePos.z = screenPos.z;//å› ä¸ºé¼ æ ‡åªæœ‰Xï¼ŒYè½´ï¼Œæ‰€ä»¥è¦èµ‹äºˆç»™é¼ æ ‡Zè½´
+                Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);//æŠŠé¼ æ ‡çš„å±å¹•åæ ‡è½¬æ¢æˆä¸–ç•Œåæ ‡
+                m_SelectedObject.transform.position = worldPos;//æ§åˆ¶ç‰©å“ç§»åŠ¨
+
+                //è®¾ç½®ç‰©å“ä¸ºé€æ˜
+                m_SelectedObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.6f);
+            }
         }
     }
 
@@ -57,15 +91,16 @@ public class PlacementSystem : MonoBehaviour
     //    m_InputManager.OnExit += StopPlacement;
     //}
 
-    public void StartPlacement()//ÒÀ´ÎÈ¡³öÎïÆ·
+    public void StartPlacement()//ä»ç›’å­é‡Œä¾æ¬¡å–å‡ºç‰©å“
     {
         StopPlacement();
-        if (m_SelectedObjectIndex > 3)
+        if (m_SelectedObjectIndex > m_ObjectCount)
         {
             return; 
         }
         m_SelectedObjectIndex += 1;
-        m_SelectedObject = Instantiate(m_DataBase.ObjectDataList[m_SelectedObjectIndex].Prefab);//°´ÕÕÏÂ±êÉú³ÉÎïÆ·
+        m_SelectedObject = Instantiate(m_DataBase.ObjectDataList[m_SelectedObjectIndex].Prefab);//ç”Ÿæˆç‰©å“
+        print(m_SelectedObject);
         m_IsItemSelected = true;
         m_InputManager.OnClicked += PlaceStructure;
         m_InputManager.OnExit += StopPlacement;
@@ -77,15 +112,22 @@ public class PlacementSystem : MonoBehaviour
         m_InputManager.OnExit -= StopPlacement;
     }
 
-    private void PlaceStructure()//°ÑÎïÆ··ÅÔÚÖ¸¶¨µÄ¸ñ×Ó
+    //å°†ç‰©å“æ”¾è¿›æ ¼å­
+    private void PlaceStructure()
     {
         if (m_InputManager.IsPointerOverUI())
         {
             return;
         }
-        Vector3 mousePosition = m_InputManager.GetSelectedMapPosition();
-        Vector3Int gridPosition = m_Grid.WorldToCell(mousePosition);// ¶¨Î»Êó±êËùÔÚ¸ñ×ÓµÄ×ø±ê
-        m_SelectedObject.transform.position = m_Grid.CellToWorld(gridPosition);
+        ItemFollowMouse();
+        //bool placementValidity = CheckPlacementValidity(m_CurrentGridPosition, m_SelectedObjectIndex);
+        //if (!placementValidity)
+        //    return;
         m_IsItemSelected = false;
     }
+
+    //private bool CheckPlacementValidity(Vector3Int m_CurrentGridPosition, int m_SelectedObjectIndex)
+    //{
+    //    throw new NotImplementedException();
+    //}
 }

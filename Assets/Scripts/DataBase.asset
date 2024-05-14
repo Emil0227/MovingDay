@@ -13,23 +13,51 @@ MonoBehaviour:
   m_Name: DataBase
   m_EditorClassIdentifier: 
   ObjectDataList:
-  - <Name>k__BackingField: Lamp
+  - <Name>k__BackingField: BlackBox
     <ID>k__BackingField: 0
     <Size>k__BackingField: {x: 1, y: 1}
-    <Prefab>k__BackingField: {fileID: 84193784287691383, guid: d0f796adac8b8a04e96422b02effc74b,
+    <Prefab>k__BackingField: {fileID: 6260713126584298348, guid: 4955e9daa899d9744b14e58cea976e09,
       type: 3}
-  - <Name>k__BackingField: Chair
+    <PlacementLayerMask>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 64
+  - <Name>k__BackingField: WhiteBox
     <ID>k__BackingField: 1
     <Size>k__BackingField: {x: 1, y: 1}
-    <Prefab>k__BackingField: {fileID: 327969557580775898, guid: 93c8a38ba2242fe44a2d51355aa30a5a,
+    <Prefab>k__BackingField: {fileID: 5929463711386606645, guid: 9b452f52e54dc6340bff4406830147de,
       type: 3}
-  - <Name>k__BackingField: Bed
+    <PlacementLayerMask>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 64
+  - <Name>k__BackingField: OrangeBox
     <ID>k__BackingField: 2
-    <Size>k__BackingField: {x: 4, y: 4}
-    <Prefab>k__BackingField: {fileID: 7554849980988855634, guid: 9899c9ab74b5e9049b204a98d2387879,
+    <Size>k__BackingField: {x: 1, y: 1}
+    <Prefab>k__BackingField: {fileID: 3239652640910615997, guid: 17c30e59ccb430f4fb6719f7cc240822,
       type: 3}
-  - <Name>k__BackingField: Table
+    <PlacementLayerMask>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 64
+  - <Name>k__BackingField: PurpleBox
     <ID>k__BackingField: 3
-    <Size>k__BackingField: {x: 2, y: 2}
-    <Prefab>k__BackingField: {fileID: 5463169430624846502, guid: 69d22aaa387ec0c47904a48b5c668164,
+    <Size>k__BackingField: {x: 1, y: 1}
+    <Prefab>k__BackingField: {fileID: 6961855160149107670, guid: 554f530dc6959bb4ca48f518ee2011d4,
       type: 3}
+    <PlacementLayerMask>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 64
+  - <Name>k__BackingField: RedBooks
+    <ID>k__BackingField: 4
+    <Size>k__BackingField: {x: 1, y: 4}
+    <Prefab>k__BackingField: {fileID: 2809880982132248935, guid: c27bab006ab4a1b4e82b0f568e6cc5c8,
+      type: 3}
+    <PlacementLayerMask>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 64
+  - <Name>k__BackingField: BlueBooks
+    <ID>k__BackingField: 5
+    <Size>k__BackingField: {x: 1, y: 1}
+    <Prefab>k__BackingField: {fileID: 7140729463224392232, guid: f87563b405281a8478492abac9e78357,
+      type: 3}
+    <PlacementLayerMask>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 64
